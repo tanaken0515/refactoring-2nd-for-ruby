@@ -15,12 +15,7 @@ class Invoice
     end
 
     invoice['performances'].each do |performance|
-      # ボリューム特典ポイントを加算
-      volume_credits += [performance['audience'] - 30, 0].max
-      # 喜劇のときは 10 人につき、さらにポイントを追加
-      if play_for(performance)['type'] == 'comedy'
-        volume_credits += performance['audience'] / 5 # @tanaken0515: "5" じゃなくて "10" では？
-      end
+      volume_credits += volume_credits_for(performance)
       # 注文の内訳を出力
       result += "\t#{play_for(performance)['name']}: #{fmt.call(amount_for(performance) / 100)} (#{performance['audience']} seats)\n"
       total_amount += amount_for(performance)
@@ -55,5 +50,16 @@ class Invoice
 
   def play_for(performance)
     @plays[performance['playID']]
+  end
+
+  def volume_credits_for(performance)
+    volume_credits = 0
+    # ボリューム特典ポイントを加算
+    volume_credits += [performance['audience'] - 30, 0].max
+    # 喜劇のときは 10 人につき、さらにポイントを追加
+    if play_for(performance)['type'] == 'comedy'
+      volume_credits += performance['audience'] / 5 # @tanaken0515: "5" じゃなくて "10" では？
+    end
+    volume_credits
   end
 end
