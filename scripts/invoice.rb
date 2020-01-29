@@ -11,23 +11,7 @@ def statement(invoice, plays)
 
   invoice['performances'].each do |performance|
     play = plays[performance['playID']]
-    this_amount = 0
-
-    case play['type']
-    when 'tragedy'
-      this_amount = 40000
-      if performance['audience'] > 30
-        this_amount += 1000 * (performance['audience'] - 30)
-      end
-    when 'comedy'
-      this_amount = 30000
-      if performance['audience'] > 20
-        this_amount += 10000 + 500 * (performance['audience'] - 20)
-      end
-      this_amount += 300 * performance['audience']
-    else
-      raise "unknown type: #{play['type']}"
-    end
+    this_amount = amount_for(performance, play)
 
     # ボリューム特典ポイントを加算
     volume_credits += [performance['audience'] - 30, 0].max
@@ -43,4 +27,26 @@ def statement(invoice, plays)
   result += "Amount owed is #{fmt.call(total_amount / 100)}\n"
   result += "You earned #{volume_credits} credits\n"
   result
+end
+
+def amount_for(performance, play)
+  this_amount = 0
+
+  case play['type']
+  when 'tragedy'
+    this_amount = 40000
+    if performance['audience'] > 30
+      this_amount += 1000 * (performance['audience'] - 30)
+    end
+  when 'comedy'
+    this_amount = 30000
+    if performance['audience'] > 20
+      this_amount += 10000 + 500 * (performance['audience'] - 20)
+    end
+    this_amount += 300 * performance['audience']
+  else
+    raise "unknown type: #{play['type']}"
+  end
+
+  this_amount
 end
