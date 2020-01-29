@@ -1,5 +1,9 @@
 class Invoice
-  def statement(invoice, plays)
+  def initialize(plays)
+    @plays = plays
+  end
+
+  def statement(invoice)
     total_amount = 0
     volume_credits = 0
     result = "Statement for #{invoice['customer']}\n"
@@ -11,7 +15,7 @@ class Invoice
     end
 
     invoice['performances'].each do |performance|
-      play = play_for(performance, plays)
+      play = play_for(performance)
       this_amount = amount_for(performance, play)
 
       # ボリューム特典ポイントを加算
@@ -52,7 +56,7 @@ class Invoice
     result
   end
 
-  def play_for(performance, plays)
-    plays[performance['playID']]
+  def play_for(performance)
+    @plays[performance['playID']]
   end
 end
