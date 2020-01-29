@@ -1,46 +1,76 @@
-def statement(invoice, plays)
-  total_amount = 0
-  volume_credits = 0
-  result = "Statement for #{invoice['customer']}\n"
+class Invoice
+  def initialize(invoice, plays)
+    @invoice = invoice
+    @plays = plays
+  end
 
-  # @tanaken0515: `Intl.NumberFormat` の代わり
-  fmt = lambda do |num|
+  def statement
+    result = "Statement for #{@invoice['customer']}\n"
+
+    @invoice['performances'].each do |performance|
+      # 注文の内訳を出力
+      result += "\t#{play_for(performance)['name']}: #{usd(amount_for(performance) / 100)} (#{performance['audience']} seats)\n"
+    end
+
+    result += "Amount owed is #{usd(total_amount / 100)}\n"
+    result += "You earned #{total_volume_credits} credits\n"
+    result
+  end
+
+  def amount_for(performance)
+    result = 0
+
+    case play_for(performance)['type']
+    when 'tragedy'
+      result = 40000
+      if performance['audience'] > 30
+        result += 1000 * (performance['audience'] - 30)
+      end
+    when 'comedy'
+      result = 30000
+      if performance['audience'] > 20
+        result += 10000 + 500 * (performance['audience'] - 20)
+      end
+      result += 300 * performance['audience']
+    else
+      raise "unknown type: #{play_for(performance)['type']}"
+    end
+
+    result
+  end
+
+  def play_for(performance)
+    @plays[performance['playID']]
+  end
+
+  def volume_credits_for(performance)
+    result = 0
+    result += [performance['audience'] - 30, 0].max
+    if play_for(performance)['type'] == 'comedy'
+      result += performance['audience'] / 5 # @tanaken0515: "5" じゃなくて "10" では？
+    end
+    result
+  end
+
+  def usd(num)
+    # @tanaken0515: `Intl.NumberFormat` の代わり
     amount = num.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\1,').reverse
     "$#{amount}.00"
   end
 
-  invoice['performances'].each do |performance|
-    play = plays[performance['playID']]
-    this_amount = 0
-
-    case play['type']
-    when 'tragedy'
-      this_amount = 40000
-      if performance['audience'] > 30
-        this_amount += 1000 * (performance['audience'] - 30)
-      end
-    when 'comedy'
-      this_amount = 30000
-      if performance['audience'] > 20
-        this_amount += 10000 + 500 * (performance['audience'] - 20)
-      end
-      this_amount += 300 * performance['audience']
-    else
-      raise "unknown type: #{play['type']}"
+  def total_volume_credits
+    result = 0
+    @invoice['performances'].each do |performance|
+      result += volume_credits_for(performance)
     end
-
-    # ボリューム特典ポイントを加算
-    volume_credits += [performance['audience'] - 30, 0].max
-    # 喜劇のときは 10 人につき、さらにポイントを追加
-    if play['type'] == 'comedy'
-      volume_credits += performance['audience'] / 5 # @tanaken0515: "5" じゃなくて "10" では？
-    end
-    # 注文の内訳を出力
-    result += "\t#{play['name']}: #{fmt.call(this_amount / 100)} (#{performance['audience']} seats)\n"
-    total_amount += this_amount
+    result
   end
 
-  result += "Amount owed is #{fmt.call(total_amount / 100)}\n"
-  result += "You earned #{volume_credits} credits\n"
-  result
+  def total_amount
+    result = 0
+    @invoice['performances'].each do |performance|
+      result += amount_for(performance)
+    end
+    result
+  end
 end
