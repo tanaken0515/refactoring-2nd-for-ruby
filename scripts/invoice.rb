@@ -4,16 +4,14 @@ class Invoice
   end
 
   def statement(invoice)
-    total_amount = 0
     result = "Statement for #{invoice['customer']}\n"
 
     invoice['performances'].each do |performance|
       # 注文の内訳を出力
       result += "\t#{play_for(performance)['name']}: #{usd(amount_for(performance) / 100)} (#{performance['audience']} seats)\n"
-      total_amount += amount_for(performance)
     end
 
-    result += "Amount owed is #{usd(total_amount / 100)}\n"
+    result += "Amount owed is #{usd(total_amount(invoice) / 100)}\n"
     result += "You earned #{total_volume_credits(invoice)} credits\n"
     result
   end
@@ -65,5 +63,13 @@ class Invoice
       volume_credits += volume_credits_for(performance)
     end
     volume_credits
+  end
+
+  def total_amount(invoice)
+    total_amount = 0
+    invoice['performances'].each do |performance|
+      total_amount += amount_for(performance)
+    end
+    total_amount
   end
 end
