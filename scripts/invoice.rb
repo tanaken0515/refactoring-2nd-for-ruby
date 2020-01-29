@@ -15,8 +15,6 @@ class Invoice
     end
 
     invoice['performances'].each do |performance|
-      this_amount = amount_for(performance)
-
       # ボリューム特典ポイントを加算
       volume_credits += [performance['audience'] - 30, 0].max
       # 喜劇のときは 10 人につき、さらにポイントを追加
@@ -24,8 +22,8 @@ class Invoice
         volume_credits += performance['audience'] / 5 # @tanaken0515: "5" じゃなくて "10" では？
       end
       # 注文の内訳を出力
-      result += "\t#{play_for(performance)['name']}: #{fmt.call(this_amount / 100)} (#{performance['audience']} seats)\n"
-      total_amount += this_amount
+      result += "\t#{play_for(performance)['name']}: #{fmt.call(amount_for(performance) / 100)} (#{performance['audience']} seats)\n"
+      total_amount += amount_for(performance)
     end
 
     result += "Amount owed is #{fmt.call(total_amount / 100)}\n"
