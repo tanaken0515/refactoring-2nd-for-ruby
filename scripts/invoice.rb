@@ -7,13 +7,12 @@ class Invoice
     total_amount = 0
     result = "Statement for #{invoice['customer']}\n"
 
-    volume_credits = 0
     invoice['performances'].each do |performance|
-      volume_credits += volume_credits_for(performance)
       # 注文の内訳を出力
       result += "\t#{play_for(performance)['name']}: #{usd(amount_for(performance) / 100)} (#{performance['audience']} seats)\n"
       total_amount += amount_for(performance)
     end
+    volume_credits = total_volume_credits(invoice)
 
     result += "Amount owed is #{usd(total_amount / 100)}\n"
     result += "You earned #{volume_credits} credits\n"
@@ -59,5 +58,13 @@ class Invoice
     # @tanaken0515: `Intl.NumberFormat` の代わり
     amount = num.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\1,').reverse
     "$#{amount}.00"
+  end
+
+  def total_volume_credits(invoice)
+    volume_credits = 0
+    invoice['performances'].each do |performance|
+      volume_credits += volume_credits_for(performance)
+    end
+    volume_credits
   end
 end
