@@ -30,23 +30,23 @@ def statement(invoice, plays)
 end
 
 def amount_for(performance, play)
-  this_amount = 0
+  result = 0
 
   case play['type']
   when 'tragedy'
-    this_amount = 40000
+    result = 40000
     if performance['audience'] > 30
-      this_amount += 1000 * (performance['audience'] - 30)
+      result += 1000 * (performance['audience'] - 30)
     end
   when 'comedy'
-    this_amount = 30000
+    result = 30000
     if performance['audience'] > 20
-      this_amount += 10000 + 500 * (performance['audience'] - 20)
+      result += 10000 + 500 * (performance['audience'] - 20)
     end
-    this_amount += 300 * performance['audience']
+    result += 300 * performance['audience']
   else
     raise "unknown type: #{play['type']}"
   end
 
-  this_amount
+  result
 end
