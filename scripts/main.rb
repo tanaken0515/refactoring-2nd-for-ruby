@@ -7,4 +7,4 @@ f2 = File.open("data/plays.json")
 invoices = JSON.parse(f1.read)
 plays = JSON.parse(f2.read)
 
-print Invoice.new(plays).statement(invoices.first)
+print Invoice.new(invoices.first, plays).statement

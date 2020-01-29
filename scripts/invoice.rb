@@ -1,18 +1,19 @@
 class Invoice
-  def initialize(plays)
+  def initialize(invoice, plays)
+    @invoice = invoice
     @plays = plays
   end
 
-  def statement(invoice)
-    result = "Statement for #{invoice['customer']}\n"
+  def statement
+    result = "Statement for #{@invoice['customer']}\n"
 
-    invoice['performances'].each do |performance|
+    @invoice['performances'].each do |performance|
       # 注文の内訳を出力
       result += "\t#{play_for(performance)['name']}: #{usd(amount_for(performance) / 100)} (#{performance['audience']} seats)\n"
     end
 
-    result += "Amount owed is #{usd(total_amount(invoice) / 100)}\n"
-    result += "You earned #{total_volume_credits(invoice)} credits\n"
+    result += "Amount owed is #{usd(total_amount / 100)}\n"
+    result += "You earned #{total_volume_credits} credits\n"
     result
   end
 
@@ -57,17 +58,17 @@ class Invoice
     "$#{amount}.00"
   end
 
-  def total_volume_credits(invoice)
+  def total_volume_credits
     result = 0
-    invoice['performances'].each do |performance|
+    @invoice['performances'].each do |performance|
       result += volume_credits_for(performance)
     end
     result
   end
 
-  def total_amount(invoice)
+  def total_amount
     result = 0
-    invoice['performances'].each do |performance|
+    @invoice['performances'].each do |performance|
       result += amount_for(performance)
     end
     result
