@@ -58,18 +58,18 @@ class Invoice
   end
 
   def total_volume_credits(invoice)
-    volume_credits = 0
+    result = 0
     invoice['performances'].each do |performance|
-      volume_credits += volume_credits_for(performance)
+      result += volume_credits_for(performance)
     end
-    volume_credits
+    result
   end
 
   def total_amount(invoice)
-    total_amount = 0
+    result = 0
     invoice['performances'].each do |performance|
-      total_amount += amount_for(performance)
+      result += amount_for(performance)
     end
-    total_amount
+    result
   end
 end
