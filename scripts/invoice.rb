@@ -5,9 +5,9 @@ class Invoice
 
   def statement(invoice)
     total_amount = 0
-    volume_credits = 0
     result = "Statement for #{invoice['customer']}\n"
 
+    volume_credits = 0
     invoice['performances'].each do |performance|
       volume_credits += volume_credits_for(performance)
       # 注文の内訳を出力
