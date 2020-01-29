@@ -12,10 +12,9 @@ class Invoice
       result += "\t#{play_for(performance)['name']}: #{usd(amount_for(performance) / 100)} (#{performance['audience']} seats)\n"
       total_amount += amount_for(performance)
     end
-    volume_credits = total_volume_credits(invoice)
 
     result += "Amount owed is #{usd(total_amount / 100)}\n"
-    result += "You earned #{volume_credits} credits\n"
+    result += "You earned #{total_volume_credits(invoice)} credits\n"
     result
   end
 
