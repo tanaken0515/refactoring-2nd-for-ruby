@@ -11,7 +11,7 @@ class Invoice
     end
 
     invoice['performances'].each do |performance|
-      play = plays[performance['playID']]
+      play = play_for(performance, plays)
       this_amount = amount_for(performance, play)
 
       # ボリューム特典ポイントを加算
@@ -50,5 +50,9 @@ class Invoice
     end
 
     result
+  end
+
+  def play_for(performance, plays)
+    plays[performance['playID']]
   end
 end
