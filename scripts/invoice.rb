@@ -15,7 +15,7 @@ class Invoice
     end
 
     invoice['performances'].each do |performance|
-      this_amount = amount_for(performance, play_for(performance))
+      this_amount = amount_for(performance)
 
       # ボリューム特典ポイントを加算
       volume_credits += [performance['audience'] - 30, 0].max
@@ -33,7 +33,7 @@ class Invoice
     result
   end
 
-  def amount_for(performance, play)
+  def amount_for(performance)
     result = 0
 
     case play_for(performance)['type']
