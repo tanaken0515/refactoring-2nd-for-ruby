@@ -11,11 +11,11 @@ class Invoice
     invoice['performances'].each do |performance|
       volume_credits += volume_credits_for(performance)
       # 注文の内訳を出力
-      result += "\t#{play_for(performance)['name']}: #{fmt(amount_for(performance) / 100)} (#{performance['audience']} seats)\n"
+      result += "\t#{play_for(performance)['name']}: #{usd(amount_for(performance) / 100)} (#{performance['audience']} seats)\n"
       total_amount += amount_for(performance)
     end
 
-    result += "Amount owed is #{fmt(total_amount / 100)}\n"
+    result += "Amount owed is #{usd(total_amount / 100)}\n"
     result += "You earned #{volume_credits} credits\n"
     result
   end
@@ -55,7 +55,7 @@ class Invoice
     result
   end
 
-  def fmt(num)
+  def usd(num)
     # @tanaken0515: `Intl.NumberFormat` の代わり
     amount = num.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\1,').reverse
     "$#{amount}.00"
