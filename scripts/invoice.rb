@@ -36,7 +36,7 @@ class Invoice
   def amount_for(performance, play)
     result = 0
 
-    case play['type']
+    case play_for(performance)['type']
     when 'tragedy'
       result = 40000
       if performance['audience'] > 30
@@ -49,7 +49,7 @@ class Invoice
       end
       result += 300 * performance['audience']
     else
-      raise "unknown type: #{play['type']}"
+      raise "unknown type: #{play_for(performance)['type']}"
     end
 
     result
